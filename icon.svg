@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <rect width="180" height="180" rx="40" fill="#6366f1"/>
+  <text x="90" y="68" text-anchor="middle" font-size="22" font-family="-apple-system, Arial" font-weight="700" fill="rgba(255,255,255,0.7)">GYM</text>
+  <text x="90" y="130" text-anchor="middle" font-size="72" font-family="-apple-system, Arial" font-weight="800" fill="white">GT</text>
+</svg>
