@@ -1,14 +1,16 @@
-const CACHE_NAME = 'gymtracker-v2';
-const ASSETS = [
-  '/',
-  '/GymTracker.html',
-  '/manifest.json',
-  '/icon.svg'
-];
+const CACHE_NAME = 'gymtracker-v4';
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      // Cache relative to service worker scope
+      return cache.addAll([
+        './',
+        './index.html',
+        './manifest.json',
+        './icon.svg'
+      ]);
+    })
   );
   self.skipWaiting();
 });
@@ -16,18 +18,16 @@ self.addEventListener('install', e => {
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(cached => {
-      // Serve from cache first, fall back to network
       if (cached) return cached;
       return fetch(e.request).then(response => {
-        // Cache any new successful requests
-        if (response.ok) {
+        if (response.ok && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
         return response;
       }).catch(() => {
-        // If offline and not cached, serve the main page
-        return caches.match('/GymTracker.html');
+        // Offline fallback — serve the cached main page
+        return caches.match('./index.html') || caches.match('./');
       });
     })
   );
