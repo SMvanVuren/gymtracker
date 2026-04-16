@@ -477,9 +477,20 @@ canvas { width: 100% !important; }
     <button class="action-btn" style="margin-top:8px" onclick="importProgram()">Import New Program</button>
   </div>
   <div class="card">
+    <div class="card-title">Restore Data</div>
+    <div class="setting-hint">If you lost data after switching from local server to GitHub Pages, paste your backup JSON here to restore it. Your existing logs will be preserved — restored logs will be merged in.</div>
+    <textarea class="text-input text-area" id="restoreDataInput" placeholder="Paste exported JSON backup here..." style="min-height:100px"></textarea>
+    <button class="action-btn" style="margin-top:8px" onclick="restoreData()">Restore / Merge Data</button>
+  </div>
+  <div class="card">
     <div class="card-title">Data</div>
     <button class="action-btn" onclick="exportData()">Export All Data</button>
     <button class="action-btn danger" onclick="confirmReset()">Reset Everything</button>
+  </div>
+  <div class="card">
+    <div class="card-title">App</div>
+    <div class="setting-hint" id="appVersion">Version: v5</div>
+    <button class="action-btn" onclick="forceRefresh()">Force Update App</button>
   </div>
 </div>
 
@@ -1440,6 +1451,59 @@ function exportData() {
   showToast('Data exported');
 }
 
+function restoreData() {
+  const raw = document.getElementById('restoreDataInput').value.trim();
+  if (!raw) { showToast('Paste backup data first'); return; }
+
+  try {
+    const imported = JSON.parse(raw);
+    if (!imported.logs || !Array.isArray(imported.logs)) throw new Error('No logs found');
+
+    // Merge logs — avoid duplicates by checking IDs
+    const existingIds = new Set(state.logs.map(l => l.id));
+    let added = 0;
+    imported.logs.forEach(log => {
+      if (!existingIds.has(log.id)) {
+        state.logs.push(log);
+        added++;
+      }
+    });
+
+    // Sort logs by date
+    state.logs.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Import program if we don't have one or ours is default
+    if (imported.program && imported.program.name) {
+      state.program = imported.program;
+    }
+
+    saveState();
+    document.getElementById('restoreDataInput').value = '';
+    showToast(`Restored ${added} workouts (${state.logs.length} total)`);
+    showPage('settings');
+  } catch(e) {
+    showToast('Invalid data format');
+  }
+}
+
+function forceRefresh() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      const unregPromises = regs.map(r => r.unregister());
+      return Promise.all(unregPromises);
+    }).then(() => {
+      return caches.keys();
+    }).then(keys => {
+      return Promise.all(keys.map(k => caches.delete(k)));
+    }).then(() => {
+      showToast('Cache cleared — reloading...');
+      setTimeout(() => window.location.reload(true), 500);
+    });
+  } else {
+    window.location.reload(true);
+  }
+}
+
 function confirmReset() {
   if (confirm('Delete ALL data? This cannot be undone.')) {
     if (confirm('Are you really sure? All workout history will be lost.')) {
@@ -1472,7 +1536,20 @@ function showToast(msg) {
 
 // ============ SERVICE WORKER ============
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // Check for updates every time the app loads
+    reg.update();
+    // Listen for new service worker ready
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated') {
+          // New version available — reload to use it
+          window.location.reload();
+        }
+      });
+    });
+  }).catch(() => {});
 }
 
 // ============ INIT ============

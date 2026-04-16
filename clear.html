@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymTracker — Updating...</title>
+<style>
+body { background: #0a0a0f; color: #e2e8f0; font-family: -apple-system, sans-serif;
+  display: flex; align-items: center; justify-content: center; min-height: 100vh;
+  text-align: center; padding: 20px; }
+.msg { font-size: 1.2rem; }
+.sub { color: #64748b; font-size: 0.85rem; margin-top: 12px; }
+.spinner { margin: 20px auto; width: 40px; height: 40px; border: 3px solid #1e1e2e;
+  border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style></head><body>
+<div>
+  <div class="spinner"></div>
+  <div class="msg" id="status">Clearing old cache...</div>
+  <div class="sub" id="detail">This only takes a moment</div>
+</div>
+<script>
+async function clearAndRedirect() {
+  const status = document.getElementById('status');
+  const detail = document.getElementById('detail');
+  try {
+    // 1. Unregister all service workers
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) await r.unregister();
+      status.textContent = `Cleared ${regs.length} service worker(s)...`;
+    }
+    // 2. Delete all caches
+    const keys = await caches.keys();
+    for (const k of keys) await caches.delete(k);
+    status.textContent = 'Cache cleared! Loading fresh app...';
+    detail.textContent = `Deleted ${keys.length} cache(s)`;
+    // 3. Redirect to app with cache-bust
+    setTimeout(() => {
+      window.location.replace('./index.html?v=' + Date.now());
+    }, 1000);
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    detail.textContent = 'Try clearing Safari data manually: Settings > Safari > Clear Website Data';
+  }
+}
+clearAndRedirect();
+</script>
+</body></html>
