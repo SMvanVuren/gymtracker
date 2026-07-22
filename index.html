@@ -469,6 +469,11 @@ canvas { width: 100% !important; }
     <button class="action-btn" style="margin-top:8px" onclick="saveApiKey()">Save Key</button>
   </div>
   <div class="card">
+    <div class="card-title">Load Built-in Program</div>
+    <div class="setting-hint" id="builtInHint">One tap loads the current built-in program. Your workout history is kept — only the program is replaced.</div>
+    <button class="action-btn" onclick="loadBuiltInProgram()">Load "Cannons &amp; Cannonballs"</button>
+  </div>
+  <div class="card">
     <div class="card-title">Generate New Program</div>
     <div class="setting-hint">After 4-6 weeks, generate a new program based on your progress.</div>
     <button class="action-btn" onclick="generatePrompt()">Copy Prompt to Clipboard</button>
@@ -545,63 +550,75 @@ canvas { width: 100% !important; }
 <script>
 // ============ DEFAULT PROGRAM ============
 const DEFAULT_PROGRAM = {
-  name: "4-Day Program — Arms Focus",
-  startDate: "2026-04-06",
-  weeks: 6,
+  name: "Cannons & Cannonballs — Arms + Shoulders",
+  startDate: "2026-07-20",
+  weeks: 8,
   days: [
     {
-      name: "Day 1 — Chest + Triceps",
-      subtitle: "Heavy Push",
+      name: "Day 1 — Shoulders",
+      subtitle: "3D Delts / Width Day",
       exercises: [
-        { name: "Smith Machine Chest Press", sets: 4, reps: "6-10", notes: "Heavier — strength focus" },
-        { name: "Incline Machine Press", sets: 4, reps: "8-12", notes: "" },
-        { name: "Pec Deck Flyes", sets: 3, reps: "12-15", notes: "Squeeze hard at peak" },
-        { name: "Low Cable Fly / Crossover", sets: 3, reps: "12-15", notes: "Keep arms slightly bent" },
-        { name: "Close-Grip Smith Press", sets: 3, reps: "8-12", notes: "Compound tricep mass builder" },
-        { name: "Tricep Pushdowns (bar)", sets: 4, reps: "8-12", notes: "Heavier than before" },
-        { name: "Overhead Cable Tricep Extension", sets: 3, reps: "10-15", notes: "Full stretch at bottom" }
+        { name: "Seated DB Shoulder Press", sets: 4, reps: "8-12", notes: "Bench upright, back fully supported" },
+        { name: "DB Lateral Raise (both arms)", sets: 4, reps: "12-15", notes: "Slight forward lean; stop at shoulder height — main width driver" },
+        { name: "Cable Lateral Raise (single-arm)", sets: 3, reps: "15", notes: "Constant tension, 3-sec eccentric" },
+        { name: "Reverse Pec Deck", sets: 4, reps: "12-15", notes: "Rear delts — the 3D pop" },
+        { name: "Chest-Supported Rear Delt Fly (DB)", sets: 3, reps: "15", notes: "Face down on incline, back-safe. Second rear-delt angle" },
+        { name: "DB Shrug (heavy)", sets: 3, reps: "12-15", notes: "Hold 1 sec at top" }
       ],
-      finisher: "Machine Crunch 3x15 + Pallof Press 3x12/side"
+      finisher: "🔥 Lean-away Cable Lateral mechanical drop — 1×/arm (full ROM → cheat partials to failure)\nAb: Hanging Knee Raise 3×12 + Pallof Press 3×12/side"
     },
     {
-      name: "Day 2 — Back + Biceps",
-      subtitle: "Heavy Pull",
-      exercises: [
-        { name: "Lat Pulldown", sets: 4, reps: "6-10", notes: "Go heavier — strength sets" },
-        { name: "Seated Cable Row (wide grip)", sets: 4, reps: "8-12", notes: "Elbows flared slightly" },
-        { name: "Machine Row (close grip)", sets: 3, reps: "10-15", notes: "" },
-        { name: "Face Pulls", sets: 3, reps: "15", notes: "Shoulder health — don't skip" },
-        { name: "EZ Bar / Machine Preacher Curl", sets: 4, reps: "8-10", notes: "Heavy — mass builder" },
-        { name: "Incline DB Curl (or Cable Curl)", sets: 3, reps: "10-15", notes: "Stretch focus at bottom" },
-        { name: "Cable Hammer Curls (rope)", sets: 3, reps: "12-15", notes: "Brachialis = arm thickness" }
-      ],
-      finisher: "Machine Crunch 3x15 + Cable Woodchoppers 3x12/side"
-    },
-    {
-      name: "Day 3 — Shoulders",
-      subtitle: "All Three Heads",
-      exercises: [
-        { name: "Seated Shoulder Press Machine", sets: 4, reps: "8-12", notes: "Primary mass builder" },
-        { name: "Cable Lateral Raises (single arm)", sets: 4, reps: "12-15", notes: "Slow eccentric — 3 sec down" },
-        { name: "Rear Delt Fly Machine", sets: 4, reps: "12-15", notes: "Rear head = rounded shoulder look" },
-        { name: "Cable Front Raises", sets: 3, reps: "12-15", notes: "" },
-        { name: "Cable Upright Rows", sets: 3, reps: "12-15", notes: "Elbows above wrists, medium grip" }
-      ],
-      finisher: "Machine Crunch 3x15 + Pallof Press 3x12/side"
-    },
-    {
-      name: "Day 4 — ARMS",
+      name: "Day 2 — Arms",
       subtitle: "The Money Session",
       exercises: [
-        { name: "Machine / EZ Preacher Curl", sets: 4, reps: "8-10", notes: "Heavy, peak hold 1 sec", category: "BICEPS" },
-        { name: "Cable Curl (straight bar)", sets: 3, reps: "10-12", notes: "Constant tension", category: "BICEPS" },
-        { name: "Cable Hammer Curls (rope)", sets: 3, reps: "12-15", notes: "Superset with next", category: "BICEPS" },
-        { name: "Cable Concentration Curl (single arm)", sets: 3, reps: "12/arm", notes: "Finish the bicep", category: "BICEPS" },
-        { name: "Tricep Pushdowns (rope)", sets: 4, reps: "10-15", notes: "Flare rope at bottom", category: "TRICEPS" },
-        { name: "Overhead Cable Tricep Extension", sets: 4, reps: "10-15", notes: "Long head = arm size", category: "TRICEPS" },
-        { name: "Machine Tricep Dip / Pushdown (bar)", sets: 3, reps: "8-12", notes: "Heavier, compound feel", category: "TRICEPS" }
+        { name: "Bayesian Cable Curl (single-arm)", sets: 4, reps: "10-12", notes: "Cable behind body — stretch + peak", category: "BICEPS" },
+        { name: "Machine Preacher Curl", sets: 3, reps: "10-12", notes: "Heavy, 1-sec peak hold", category: "BICEPS" },
+        { name: "Seated Incline DB Curl", sets: 3, reps: "10-12", notes: "~60° bench, deep stretch", category: "BICEPS" },
+        { name: "Cross-body DB Hammer Curl", sets: 3, reps: "12-15", notes: "Brachialis = arm thickness", category: "BICEPS" },
+        { name: "Close-Grip Smith Bench Press", sets: 4, reps: "8-12", notes: "Hands shoulder-width — compound mass", category: "TRICEPS" },
+        { name: "Overhead Rope Cable Extension", sets: 4, reps: "10-15", notes: "Long-head stretch; kneeling or seated", category: "TRICEPS" },
+        { name: "Single-arm Reverse-grip Pushdown", sets: 3, reps: "12-15", notes: "Palms up, medial head", category: "TRICEPS" }
       ],
-      finisher: "Superset finisher (2 rounds): Cable Curl x15 → Pushdown x15 → rest 90s\nAb: Machine Crunch 3x20 + Leg Raises 3x15"
+      finisher: "🔥 Antagonist superset ×2 rounds — EZ-bar Curl 21s → V-bar Pushdown drop set. No rest within a round; 90s after each.\nAb: Cable Woodchopper 3×12/side + Hollow Hold 3×30sec"
+    },
+    {
+      name: "Day 3 — Chest + Back",
+      subtitle: "Antagonist Supersets (maintenance)",
+      exercises: [
+        { name: "Incline DB Press", sets: 4, reps: "8-12", notes: "Perform back-to-back with Reverse-grip Lat Pulldown", category: "SUPERSET A" },
+        { name: "Reverse-grip Lat Pulldown", sets: 4, reps: "8-12", notes: "Straight into this after the press", category: "SUPERSET A" },
+        { name: "Flat Machine Chest Press", sets: 3, reps: "10-12", notes: "Perform back-to-back with T-Bar Row", category: "SUPERSET B" },
+        { name: "Chest-Supported T-Bar Row", sets: 3, reps: "10-12", notes: "Drive elbows to hips; no lumbar shear", category: "SUPERSET B" },
+        { name: "Standing Cable Crossover", sets: 3, reps: "12-15", notes: "Perform back-to-back with Straight-arm Pulldown", category: "SUPERSET C" },
+        { name: "Straight-arm Pulldown", sets: 3, reps: "12-15", notes: "Straight into this after the crossover", category: "SUPERSET C" }
+      ],
+      finisher: "Maintenance for the big pushers/pullers — every row chest-supported. Rest 90s after each completed superset.\nAb: Side Plank 3×30sec/side + Dead Bug 3×10/side"
+    },
+    {
+      name: "Day 4 — Shoulders + Arms",
+      subtitle: "Pump & Sculpt",
+      exercises: [
+        { name: "Machine Shoulder Press", sets: 4, reps: "10-12", notes: "Back supported", category: "SHOULDERS" },
+        { name: "Cable Lateral Raise (single-arm)", sets: 4, reps: "15", notes: "Extra width volume — the priority", category: "SHOULDERS" },
+        { name: "Chest-Supported Rear Delt Fly", sets: 3, reps: "15", notes: "Back-safe", category: "SHOULDERS" },
+        { name: "Spider Curl (incline bench)", sets: 3, reps: "10-12", notes: "Run #4–7 back-to-back as one circuit. 3 rounds, rest 2 min between rounds", category: "ARMS — GIANT SET" },
+        { name: "Overhead Cable Extension", sets: 3, reps: "12-15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" },
+        { name: "EZ-Bar Reverse Curl", sets: 3, reps: "12-15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" },
+        { name: "Rope Pushdown", sets: 3, reps: "15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" }
+      ],
+      finisher: "🔥 Cable Lateral Raise triple-drop — 1×/arm (12 → 10 → AMRAP). Chase the delt burn.\nAb: Cable Crunch 3×15 + Bird Dog 3×10/side"
+    },
+    {
+      name: "Day 5 — Light Legs + Core",
+      subtitle: "Back-Safe — unchanged",
+      exercises: [
+        { name: "Leg Press (Machine)", sets: 3, reps: "12-15", notes: "Lower back pressed to pad. Never round lumbar; stop above pelvis-tilt point" },
+        { name: "Leg Extension", sets: 3, reps: "12-15", notes: "Controlled 2-sec eccentric" },
+        { name: "Lying Leg Curl", sets: 3, reps: "12-15", notes: "Hip pad in place; squeeze at top" },
+        { name: "Hip Thrust Machine", sets: 3, reps: "12-15", notes: "Back-supported; drive through heels" },
+        { name: "Standing Calf Raise (Machine)", sets: 3, reps: "15-20", notes: "Full stretch; 1-sec pause at top" }
+      ],
+      finisher: "Core: Glute Bridge March 3×10/side + Bird Dog 3×10/side"
     }
   ]
 };
@@ -1413,6 +1430,15 @@ function generatePrompt() {
     document.body.removeChild(ta);
     showToast('Prompt copied \u2014 paste into Claude');
   });
+}
+
+function loadBuiltInProgram() {
+  if (!confirm('Load "' + DEFAULT_PROGRAM.name + '"?\n\nYour workout history is kept — only the program is replaced.')) return;
+  state.program = JSON.parse(JSON.stringify(DEFAULT_PROGRAM));
+  state.currentDay = 0;
+  saveState();
+  showToast('Loaded: ' + DEFAULT_PROGRAM.name);
+  showPage('today');
 }
 
 function importProgram() {
