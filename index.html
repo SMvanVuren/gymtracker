@@ -137,6 +137,8 @@ body {
 }
 .set-input input:focus { outline: none; border-color: var(--accent); }
 .set-input input.filled { border-color: var(--green); background: rgba(34,197,94,0.08); }
+.set-input input.reps-input { margin-top: 4px; font-size: 0.9rem; }
+.set-input input.reps-input.filled { border-color: var(--accent); background: rgba(99,102,241,0.10); }
 
 /* Effort buttons */
 .effort-row {
@@ -625,6 +627,7 @@ let state = {
   apiKey: '',
   currentDay: 0,
   currentInputs: {},
+  currentReps: {},   // "exIdx-setIdx": actual reps done
   currentEfforts: {} // "exIdx": "green"|"yellow"|"red"
 };
 
@@ -695,6 +698,7 @@ function renderToday() {
 function selectDay(i) {
   state.currentDay = i;
   state.currentInputs = {};
+  state.currentReps = {};
   state.currentEfforts = {};
   renderToday();
 }
@@ -714,7 +718,9 @@ function renderExercises() {
       html += `<div class="category-header">${currentCategory}</div>`;
     }
 
-    const lastWeights = getLastWeights(ex.name);
+    const lastSets = getLastSets(ex.name);
+    const lastWeights = lastSets.map(s => s.weight);
+    const lastReps = lastSets.map(s => s.done || 0);
     const lastEffort = getLastEffort(ex.name);
 
     html += `<div class="exercise">`;
@@ -727,15 +733,22 @@ function renderExercises() {
       html += `<div class="ex-notes">${ex.notes}</div>`;
     }
 
-    if (lastWeights.length > 0) {
+    if (lastSets.length > 0) {
       const effortIcon = lastEffort ? `<span class="effort-dot ${lastEffort[0]}"></span>` : '';
       const effortTip = lastEffort === 'green' ? ' — Easy, increase weight' :
                         lastEffort === 'yellow' ? ' — Moderate, stay here' :
                         lastEffort === 'red' ? ' — Maxed out' : '';
-      html += `<div class="ex-last">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 1 .5 4"/></svg>
-        Last: ${lastWeights.map(w => w + 'kg').join(', ')} ${effortIcon}${effortTip}
-      </div>`;
+      const lastStr = lastSets.map(s => {
+        const w = s.weight > 0 ? s.weight + 'kg' : '';
+        const r = s.done > 0 ? (w ? ' × ' : '') + s.done + ' reps' : '';
+        return (w + r) || null;
+      }).filter(Boolean).join(', ');
+      if (lastStr) {
+        html += `<div class="ex-last">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 1 .5 4"/></svg>
+          Last: ${lastStr} ${effortIcon}${effortTip}
+        </div>`;
+      }
     }
 
     // Set inputs
@@ -743,13 +756,20 @@ function renderExercises() {
     for (let s = 0; s < ex.sets; s++) {
       const key = `${exIdx}-${s}`;
       const val = state.currentInputs[key] || '';
+      const repVal = state.currentReps[key] || '';
       const prefill = lastWeights[s] || '';
+      const repPrefill = lastReps[s] || '';
       html += `<div class="set-input">
         <span class="set-label">Set ${s + 1}</span>
         <input type="number" inputmode="decimal" placeholder="${prefill || 'kg'}"
                value="${val}"
                class="${val ? 'filled' : ''}"
                onchange="updateInput('${key}', this.value)"
+               onfocus="this.select()">
+        <input type="number" inputmode="numeric" placeholder="${repPrefill ? repPrefill + ' reps' : 'reps'}"
+               value="${repVal}"
+               class="reps-input ${repVal ? 'filled' : ''}"
+               onchange="updateReps('${key}', this.value)"
                onfocus="this.select()">
       </div>`;
     }
@@ -798,6 +818,24 @@ function updateInput(key, value) {
   });
 }
 
+function updateReps(key, value) {
+  state.currentReps[key] = value;
+  const inputs = document.querySelectorAll('.set-input input');
+  inputs.forEach(inp => {
+    if (inp.value) inp.classList.add('filled');
+    else inp.classList.remove('filled');
+  });
+}
+
+function getLastSets(exerciseName) {
+  for (let i = state.logs.length - 1; i >= 0; i--) {
+    const log = state.logs[i];
+    const found = log.exercises.find(e => e.name === exerciseName);
+    if (found && found.sets.some(s => s.weight > 0 || s.done > 0)) return found.sets;
+  }
+  return [];
+}
+
 function getLastWeights(exerciseName) {
   for (let i = state.logs.length - 1; i >= 0; i--) {
     const log = state.logs[i];
@@ -825,7 +863,8 @@ function saveWorkout() {
     for (let s = 0; s < ex.sets; s++) {
       const key = `${exIdx}-${s}`;
       const weight = parseFloat(state.currentInputs[key]) || 0;
-      sets.push({ weight, reps: ex.reps });
+      const done = parseInt(state.currentReps[key]) || 0;
+      sets.push({ weight, reps: ex.reps, done });
     }
     return {
       name: ex.name,
@@ -834,9 +873,9 @@ function saveWorkout() {
     };
   });
 
-  const hasData = exercises.some(e => e.sets.some(s => s.weight > 0));
+  const hasData = exercises.some(e => e.sets.some(s => s.weight > 0 || s.done > 0));
   if (!hasData) {
-    showToast('Enter at least one weight first');
+    showToast('Enter at least one weight or rep count first');
     return;
   }
 
@@ -851,6 +890,7 @@ function saveWorkout() {
   state.logs.push(logEntry);
   saveState();
   state.currentInputs = {};
+  state.currentReps = {};
   state.currentEfforts = {};
 
   const btn = document.getElementById('saveBtn');
@@ -915,7 +955,7 @@ function renderHistory() {
 
   let html = '<div class="card">';
   [...state.logs].reverse().forEach(log => {
-    const filledSets = log.exercises.reduce((sum, e) => sum + e.sets.filter(s => s.weight > 0).length, 0);
+    const filledSets = log.exercises.reduce((sum, e) => sum + e.sets.filter(s => s.weight > 0 || s.done > 0).length, 0);
     // Show effort dots summary
     const efforts = log.exercises.filter(e => e.effort).map(e => e.effort);
     const dots = efforts.map(e => `<span class="effort-dot ${e[0]}"></span>`).join('');
@@ -943,7 +983,7 @@ function showLogDetail(id) {
 
   let html = '';
   log.exercises.forEach(ex => {
-    const hasData = ex.sets.some(s => s.weight > 0);
+    const hasData = ex.sets.some(s => s.weight > 0 || s.done > 0);
     if (!hasData && !ex.effort) return;
 
     const effortDot = ex.effort ? `<span class="effort-dot ${ex.effort[0]}"></span>` : '';
@@ -954,9 +994,9 @@ function showLogDetail(id) {
         <span class="ex-name">${effortDot}${ex.name}</span>
       </div>
       <div class="sets-grid" style="margin-top:6px">
-        ${ex.sets.map((s, i) => s.weight > 0 ?
+        ${ex.sets.map((s, i) => (s.weight > 0 || s.done > 0) ?
           `<div class="set-input"><span class="set-label">Set ${i+1}</span>
-           <div style="text-align:center;font-weight:700;color:var(--accent-light)">${s.weight}kg</div></div>` : ''
+           <div style="text-align:center;font-weight:700;color:var(--accent-light)">${s.weight > 0 ? s.weight + 'kg' : ''}${s.done > 0 ? (s.weight > 0 ? ' × ' : '') + s.done + ' reps' : ''}</div></div>` : ''
         ).join('')}
       </div>
       ${effortText ? `<div class="ex-notes" style="margin-top:4px">${effortText}</div>` : ''}
@@ -1000,6 +1040,8 @@ function openEditModal(id) {
         <label>Set ${sIdx + 1}</label>
         <input type="number" inputmode="decimal" id="edit-${exIdx}-${sIdx}"
                value="${s.weight || ''}" placeholder="kg" onfocus="this.select()">
+        <input type="number" inputmode="numeric" id="editreps-${exIdx}-${sIdx}"
+               value="${s.done || ''}" placeholder="reps" onfocus="this.select()">
       </div>`;
     });
 
@@ -1040,6 +1082,10 @@ function saveEditedWorkout() {
       const input = document.getElementById(`edit-${exIdx}-${sIdx}`);
       if (input) {
         s.weight = parseFloat(input.value) || 0;
+      }
+      const rinput = document.getElementById(`editreps-${exIdx}-${sIdx}`);
+      if (rinput) {
+        s.done = parseInt(rinput.value) || 0;
       }
     });
   });
@@ -1529,7 +1575,7 @@ function confirmReset() {
   if (confirm('Delete ALL data? This cannot be undone.')) {
     if (confirm('Are you really sure? All workout history will be lost.')) {
       localStorage.removeItem('gymtracker_state');
-      state = { program: DEFAULT_PROGRAM, logs: [], apiKey: '', currentDay: 0, currentInputs: {}, currentEfforts: {} };
+      state = { program: DEFAULT_PROGRAM, logs: [], apiKey: '', currentDay: 0, currentInputs: {}, currentReps: {}, currentEfforts: {} };
       saveState();
       showPage('today');
       showToast('All data reset');
