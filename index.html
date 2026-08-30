@@ -471,7 +471,7 @@ canvas { width: 100% !important; }
   <div class="card">
     <div class="card-title">Load Built-in Program</div>
     <div class="setting-hint" id="builtInHint">One tap loads the current built-in program. Your workout history is kept — only the program is replaced.</div>
-    <button class="action-btn" onclick="loadBuiltInProgram()">Load "Cannons &amp; Cannonballs"</button>
+    <button class="action-btn" onclick="loadBuiltInProgram()">Load "THE GAUNTLET"</button>
   </div>
   <div class="card">
     <div class="card-title">Generate New Program</div>
@@ -550,73 +550,68 @@ canvas { width: 100% !important; }
 <script>
 // ============ DEFAULT PROGRAM ============
 const DEFAULT_PROGRAM = {
-  name: "Cannons & Cannonballs — Arms + Shoulders",
-  startDate: "2026-07-20",
-  weeks: 8,
+  name: "THE GAUNTLET — Arms + Shoulders",
+  startDate: "2026-08-31",
+  weeks: 6,
   days: [
     {
-      name: "Day 1 — Shoulders",
-      subtitle: "3D Delts / Width Day",
+      name: "Day 1 — Heavy Game",
+      subtitle: "Cluster Power · Shoulders + Triceps (2 rests: 15s inside a cluster, 2min between)",
       exercises: [
-        { name: "Seated DB Shoulder Press", sets: 4, reps: "8-12", notes: "Bench upright, back fully supported" },
-        { name: "DB Lateral Raise (both arms)", sets: 4, reps: "12-15", notes: "Slight forward lean; stop at shoulder height — main width driver" },
-        { name: "Cable Lateral Raise (single-arm)", sets: 3, reps: "15", notes: "Constant tension, 3-sec eccentric" },
-        { name: "Reverse Pec Deck", sets: 4, reps: "12-15", notes: "Rear delts — the 3D pop" },
-        { name: "Chest-Supported Rear Delt Fly (DB)", sets: 3, reps: "15", notes: "Face down on incline, back-safe. Second rear-delt angle" },
-        { name: "DB Shrug (heavy)", sets: 3, reps: "12-15", notes: "Hold 1 sec at top" }
+        { name: "Seated Machine / DB Shoulder Press", sets: 4, reps: "4 cl × (3+3+3)", notes: "CLUSTER: 3 reps, rest 15s, ×3 (=9 reps), then rest 2min. Do 4 clusters. ~8-rep-max load. Machine first (back supported); DBs if taken — strict, no arching. Log each cluster's weight.", category: "SHOULDERS" },
+        { name: "Cable / DB Lateral Raise", sets: 3, reps: "12-15", notes: "3 straight sets. Lower slow (3s down), stop at shoulder height.", category: "SHOULDERS" },
+        { name: "Close-Grip Machine Press / Dip Machine", sets: 4, reps: "4 cl × (4+4)", notes: "CLUSTER: 4 reps, rest 15s, 4 reps (=8), then rest 2min. Do 4 clusters. ~6-8-rep-max load.", category: "TRICEPS" },
+        { name: "Cable Overhead Rope Extension", sets: 3, reps: "10-12", notes: "3 straight sets. Full overhead stretch each rep.", category: "TRICEPS" }
       ],
-      finisher: "🔥 Lean-away Cable Lateral mechanical drop — 1×/arm (full ROM → cheat partials to failure)\nAb: Hanging Knee Raise 3×12 + Pallof Press 3×12/side"
+      finisher: "🔥 One cable, NO rest — overhead rope to failure → straight-arm pressdown to failure → close-grip pressdown to failure. One long triceps burnout.\nCore: Pallof Press 3×12/side + Hanging Knee Raise 3×12"
     },
     {
-      name: "Day 2 — Arms",
-      subtitle: "The Money Session",
+      name: "Day 2 — Stopwatch Game",
+      subtitle: "EDT Density · Arms · OUTSIDE (DBs + a band on the bars) — time it, count reps, beat last week",
       exercises: [
-        { name: "Bayesian Cable Curl (single-arm)", sets: 4, reps: "10-12", notes: "Cable behind body — stretch + peak", category: "BICEPS" },
-        { name: "Machine Preacher Curl", sets: 3, reps: "10-12", notes: "Heavy, 1-sec peak hold", category: "BICEPS" },
-        { name: "Seated Incline DB Curl", sets: 3, reps: "10-12", notes: "~60° bench, deep stretch", category: "BICEPS" },
-        { name: "Cross-body DB Hammer Curl", sets: 3, reps: "12-15", notes: "Brachialis = arm thickness", category: "BICEPS" },
-        { name: "Close-Grip Smith Bench Press", sets: 4, reps: "8-12", notes: "Hands shoulder-width — compound mass", category: "TRICEPS" },
-        { name: "Overhead Rope Cable Extension", sets: 4, reps: "10-15", notes: "Long-head stretch; kneeling or seated", category: "TRICEPS" },
-        { name: "Single-arm Reverse-grip Pushdown", sets: 3, reps: "12-15", notes: "Palms up, medial head", category: "TRICEPS" }
+        { name: "DB Curl", sets: 1, reps: "AMRAP 15min", notes: "BLOCK 1 — set a 15-min timer. Alternate: DB Curl ~8 → Band Pushdown ~8, repeat, rest as needed. Count total reps. Weight ≈ 12-rep-max. Log the DB weight here.", category: "BLOCK 1 — 15 min timer" },
+        { name: "Band Pushdown", sets: 1, reps: "AMRAP 15min", notes: "Alternate with DB Curl through Block 1. Band anchored high on the monkey bars. Count total reps.", category: "BLOCK 1 — 15 min timer" },
+        { name: "DB Hammer Curl", sets: 1, reps: "AMRAP 12min", notes: "BLOCK 2 — set a 12-min timer. Alternate: DB Hammer Curl ~8 → Band Overhead Extension ~8, rest as needed. Count total reps.", category: "BLOCK 2 — 12 min timer" },
+        { name: "Band Overhead Extension", sets: 1, reps: "AMRAP 12min", notes: "Alternate with DB Hammer Curl through Block 2.", category: "BLOCK 2 — 12 min timer" }
       ],
-      finisher: "🔥 Antagonist superset ×2 rounds — EZ-bar Curl 21s → V-bar Pushdown drop set. No rest within a round; 90s after each.\nAb: Cable Woodchopper 3×12/side + Hollow Hold 3×30sec"
+      finisher: "🔥 100 band curls — rest-pause, break as needed until you hit 100.\nCore: Band Pallof 3×12/side + Hollow Hold 3×30s\nProgress: beat last week's total reps by 20% before adding load."
     },
     {
-      name: "Day 3 — Chest + Back",
-      subtitle: "Antagonist Supersets (maintenance)",
+      name: "Day 3 — Pump Factory",
+      subtitle: "Chest + Back · OUTSIDE bodyweight superset on the bars (+ optional inside pump)",
       exercises: [
-        { name: "Incline DB Press", sets: 4, reps: "8-12", notes: "Perform back-to-back with Reverse-grip Lat Pulldown", category: "SUPERSET A" },
-        { name: "Reverse-grip Lat Pulldown", sets: 4, reps: "8-12", notes: "Straight into this after the press", category: "SUPERSET A" },
-        { name: "Flat Machine Chest Press", sets: 3, reps: "10-12", notes: "Perform back-to-back with T-Bar Row", category: "SUPERSET B" },
-        { name: "Chest-Supported T-Bar Row", sets: 3, reps: "10-12", notes: "Drive elbows to hips; no lumbar shear", category: "SUPERSET B" },
-        { name: "Standing Cable Crossover", sets: 3, reps: "12-15", notes: "Perform back-to-back with Straight-arm Pulldown", category: "SUPERSET C" },
-        { name: "Straight-arm Pulldown", sets: 3, reps: "12-15", notes: "Straight into this after the crossover", category: "SUPERSET C" }
+        { name: "Push-ups (feet elevated)", sets: 4, reps: "8-12", notes: "4 ROUNDS: straight into Chin-ups after each set, rest 90s after each round. Feet on a bench for more chest.", category: "PUSH/PULL SUPERSET — 4 rounds" },
+        { name: "Chin-ups / Pull-ups", sets: 4, reps: "8-12", notes: "Straight after push-ups. Band-assist or partials if needed. Prefer a row? Single-arm band row instead — torso upright, braced.", category: "PUSH/PULL SUPERSET — 4 rounds" },
+        { name: "Pec Deck (optional)", sets: 7, reps: "10", notes: "OPTIONAL finisher, INSIDE, one machine: 7×10, rest 30-45s, stretch the chest between sets.", category: "OPTIONAL FST-7 PUMP" }
       ],
-      finisher: "Maintenance for the big pushers/pullers — every row chest-supported. Rest 90s after each completed superset.\nAb: Side Plank 3×30sec/side + Dead Bug 3×10/side"
+      finisher: "Core: Side Plank 3×30s/side + Dead Bug 3×10/side"
     },
     {
-      name: "Day 4 — Shoulders + Arms",
-      subtitle: "Pump & Sculpt",
+      name: "Day 4 — The Gauntlet",
+      subtitle: "Giant Sets + Loaded Stretch · Shoulders + Arms · OUTSIDE (no rest within a round, 2min between)",
       exercises: [
-        { name: "Machine Shoulder Press", sets: 4, reps: "10-12", notes: "Back supported", category: "SHOULDERS" },
-        { name: "Cable Lateral Raise (single-arm)", sets: 4, reps: "15", notes: "Extra width volume — the priority", category: "SHOULDERS" },
-        { name: "Chest-Supported Rear Delt Fly", sets: 3, reps: "15", notes: "Back-safe", category: "SHOULDERS" },
-        { name: "Spider Curl (incline bench)", sets: 3, reps: "10-12", notes: "Run #4–7 back-to-back as one circuit. 3 rounds, rest 2 min between rounds", category: "ARMS — GIANT SET" },
-        { name: "Overhead Cable Extension", sets: 3, reps: "12-15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" },
-        { name: "EZ-Bar Reverse Curl", sets: 3, reps: "12-15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" },
-        { name: "Rope Pushdown", sets: 3, reps: "15", notes: "Part of the giant-set circuit", category: "ARMS — GIANT SET" }
+        { name: "DB Lateral Raise", sets: 3, reps: "12-15", notes: "DELT GIANT SET — 3 rounds, NO rest within a round, 2min between. Round = Lateral → Pull-apart → Face Pull → 20s loaded stretch.", category: "DELT GIANT SET — 3 rounds" },
+        { name: "Band Pull-apart", sets: 3, reps: "15", notes: "Rear delts. Straight after laterals.", category: "DELT GIANT SET — 3 rounds" },
+        { name: "Band Face Pull", sets: 3, reps: "15", notes: "Elbows high. Straight after pull-aparts.", category: "DELT GIANT SET — 3 rounds" },
+        { name: "Loaded Stretch — DB Lateral hold", sets: 3, reps: "20 sec", notes: "Hold light DBs at the bottom of a lateral, arms just off your sides, 20s. Ends the round.", category: "DELT GIANT SET — 3 rounds" },
+        { name: "DB Curl", sets: 3, reps: "12", notes: "ARM GIANT SET — 3 rounds, NO rest within, 2min between. Round = Curl → Pushdown → Hammer → Push-up → stretches.", category: "ARM GIANT SET — 3 rounds" },
+        { name: "Band Pushdown", sets: 3, reps: "15", notes: "Straight after curls.", category: "ARM GIANT SET — 3 rounds" },
+        { name: "DB Hammer Curl", sets: 3, reps: "12", notes: "Straight after pushdowns.", category: "ARM GIANT SET — 3 rounds" },
+        { name: "Close-grip Push-up", sets: 3, reps: "AMRAP", notes: "To near-failure. Straight after hammers.", category: "ARM GIANT SET — 3 rounds" },
+        { name: "Loaded Stretch — curl + triceps", sets: 3, reps: "30 sec ea", notes: "30s incline DB-curl bottom stretch + 30s overhead band triceps stretch. Ends the round.", category: "ARM GIANT SET — 3 rounds" }
       ],
-      finisher: "🔥 Cable Lateral Raise triple-drop — 1×/arm (12 → 10 → AMRAP). Chase the delt burn.\nAb: Cable Crunch 3×15 + Bird Dog 3×10/side"
+      finisher: "Core: Hanging Knee Raise 3×12 + Bird Dog 3×10/side\nProgress: add a 4th round or heavier DBs once 3 rounds feel controlled."
     },
     {
-      name: "Day 5 — Light Legs + Core",
-      subtitle: "Back-Safe — unchanged",
+      name: "Day 5 — Slow Burn",
+      subtitle: "Back-Safe Legs + Core · straight sets, slow tempo (one machine at a time)",
       exercises: [
-        { name: "Leg Press (Machine)", sets: 3, reps: "12-15", notes: "Lower back pressed to pad. Never round lumbar; stop above pelvis-tilt point" },
-        { name: "Leg Extension", sets: 3, reps: "12-15", notes: "Controlled 2-sec eccentric" },
-        { name: "Lying Leg Curl", sets: 3, reps: "12-15", notes: "Hip pad in place; squeeze at top" },
-        { name: "Hip Thrust Machine", sets: 3, reps: "12-15", notes: "Back-supported; drive through heels" },
-        { name: "Standing Calf Raise (Machine)", sets: 3, reps: "15-20", notes: "Full stretch; 1-sec pause at top" }
+        { name: "Leg Press (Machine)", sets: 3, reps: "10-12", notes: "1.5-REPS: full rep + half-rep from the bottom = 1. Lower back flat on the pad.", },
+        { name: "Leg Extension", sets: 3, reps: "12", notes: "Controlled. Last set: hold the top squeeze 15s." },
+        { name: "Seated Leg Curl", sets: 3, reps: "12-15", notes: "Squeeze 2s at full bend." },
+        { name: "Hip Thrust Machine", sets: 3, reps: "12-15", notes: "2s hold at top, drive through heels." },
+        { name: "Seated Hip Abduction", sets: 3, reps: "15-20", notes: "Push knees out slow. Back-safe glutes." },
+        { name: "Standing Calf Raise (Machine)", sets: 3, reps: "15-20", notes: "1.5-REPS; full stretch at the bottom." }
       ],
       finisher: "Core: Glute Bridge March 3×10/side + Bird Dog 3×10/side"
     }
