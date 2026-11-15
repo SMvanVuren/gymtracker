@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gymtracker-v9';
+const CACHE_NAME = 'gymtracker-v10';
 
 self.addEventListener('install', e => {
   // Force immediate activation — don't wait for old SW to release

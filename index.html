@@ -473,7 +473,7 @@ canvas { width: 100% !important; }
   <div class="card">
     <div class="card-title">Load Built-in Program</div>
     <div class="setting-hint" id="builtInHint">One tap loads the current built-in program. Your workout history is kept — only the program is replaced.</div>
-    <button class="action-btn" onclick="loadBuiltInProgram()">Load "FULL TILT"</button>
+    <button class="action-btn" onclick="loadBuiltInProgram()">Load "MAIN EVENT"</button>
   </div>
   <div class="card">
     <div class="card-title">Generate New Program</div>
@@ -552,80 +552,80 @@ canvas { width: 100% !important; }
 <script>
 // ============ DEFAULT PROGRAM ============
 const DEFAULT_PROGRAM = {
-  name: "FULL TILT — Upper / Lower + Guns & Grass",
-  startDate: "2026-10-05",
+  name: "MAIN EVENT — Arms, Chest & Shoulders (+ Legs)",
+  startDate: "2026-11-16",
   weeks: 6,
   days: [
     {
-      name: "Day 1 — Upper A",
-      subtitle: "IRON TOP · strength lean · TOP SET = 1 heavy set, then 2 lighter back-off sets (~55 min)",
+      name: "Day 1 — Chest & Tri",
+      subtitle: "HEAVYWEIGHT BOUT · Warm-up: band pull-aparts 2×15 · Main Event = a number to beat (~55 min)",
       exercises: [
-        { name: "Seated Chest Press Machine", sets: 3, reps: "6-8 / 10-12", notes: "TOP SET: 1 heavy set of 6-8. Drop ~15% and do 2 × 10-12. Back on the pad. Log weight + reps each set.", category: "MAIN LIFTS — top set + 2 back-off" },
-        { name: "Chest-Supported Row Machine", sets: 3, reps: "6-8 / 10-12", notes: "TOP SET 6-8, then 2 × 10-12 at −15%. Chest stays on the pad.", category: "MAIN LIFTS — top set + 2 back-off" },
-        { name: "Seated Machine Shoulder Press", sets: 3, reps: "8-10", notes: "Back supported, controlled down.", category: "STRAIGHT SETS" },
-        { name: "Wide Lat Pulldown", sets: 3, reps: "10-12", notes: "Pull to the upper chest, 1s squeeze.", category: "STRAIGHT SETS" },
-        { name: "DB Lateral Raise", sets: 3, reps: "12-15", notes: "3s lowering, stop at shoulder height.", category: "STRAIGHT SETS" },
-        { name: "DB Curl", sets: 3, reps: "10-12", notes: "ARMS SUPERSET on 1 bench with your own DBs: curl straight into the overhead extension. Rest 60-90s per round. 3 rounds.", category: "ARMS SUPERSET — own DBs, 1 bench" },
-        { name: "Seated Overhead DB Extension", sets: 3, reps: "10-12", notes: "Straight after the curls. Back against the bench.", category: "ARMS SUPERSET — own DBs, 1 bench" }
+        { name: "Incline Smith Press (wave)", sets: 6, reps: "8-6-4 ×2", notes: "WAVE: 8, 6, 4 reps, heavier each set. Rest 2 min. Then a 2nd wave of 8-6-4, a little heavier than the 1st. Back on the bench. Log weight + reps each set.", category: "🥊 MAIN EVENT" },
+        { name: "DB Flye (pre-exhaust)", sets: 3, reps: "12", notes: "PRE-EXHAUST on one bench with the same DBs: flyes first, then straight into the DB press. 3 rounds.", category: "UNDERCARD" },
+        { name: "DB Press (after flyes)", sets: 3, reps: "8-10", notes: "Straight after the flyes, same bench, same DBs. Rest 90s after each round.", category: "UNDERCARD" },
+        { name: "Seated Chest Press Machine (2s pause)", sets: 3, reps: "8", notes: "2s PAUSE at the stretch on every rep. Back on the pad.", category: "UNDERCARD" },
+        { name: "Dip Machine (seated)", sets: 3, reps: "8-10", notes: "Heavy triceps compound.", category: "UNDERCARD" },
+        { name: "Rope Pushdown (EMOM)", sets: 8, reps: "10", notes: "EMOM 8 min: at the start of every minute do 10 reps, rest for what's left of the minute. One cable.", category: "UNDERCARD" },
+        { name: "Push-up Countdown", sets: 1, reps: "10→1 (time)", notes: "10 push-ups, then 9, 8 … down to 1 (55 reps). Rest only as needed. Log your TIME in seconds in the reps box. Beat it next week.", category: "💥 KNOCKOUT" }
       ],
-      finisher: "Core: Hanging Knee Raise 3×12 (knees to 90°, no curling up) + Pallof Press 3×12/side"
+      finisher: "Core: Pallof Press 3×12/side + Dead Bug 3×10/side"
     },
     {
-      name: "Day 2 — Lower A",
-      subtitle: "GROUND FORCE · top set on the leg press, myo-reps to finish the quads (~50 min)",
+      name: "Day 2 — Legs",
+      subtitle: "THE PRE-EXHAUST · quads tired first = lighter leg press, less load near your back (~50 min)",
       exercises: [
-        { name: "Leg Press", sets: 3, reps: "8-10 / 12-15", notes: "TOP SET 8-10, then 2 × 12-15 at −15%. Lower back flat on the pad; stop before your pelvis tilts." },
-        { name: "Seated Leg Curl", sets: 3, reps: "10-12", notes: "2s squeeze at full bend." },
-        { name: "Leg Extension", sets: 3, reps: "12-15", notes: "LAST SET myo-reps: go to near-failure, rest 10s, do 4 reps; repeat 3 times." },
-        { name: "Hip Thrust Machine", sets: 3, reps: "10-12", notes: "2s hold at the top, drive through the heels." },
-        { name: "Standing Calf Raise (Machine)", sets: 4, reps: "12-15", notes: "Full stretch, 1s pause at the bottom." }
+        { name: "Leg Extension", sets: 3, reps: "15", notes: "PRE-EXHAUST before the leg press. 2s squeeze at the top.", category: "UNDERCARD (do first)" },
+        { name: "Leg Press (wave)", sets: 6, reps: "12-10-8 ×2", notes: "WAVE: 12, 10, 8, heavier each set; rest 2 min; 2nd wave a little heavier. Lower back flat on the pad; stop before your pelvis tilts.", category: "🥊 MAIN EVENT" },
+        { name: "Single-Leg Leg Press", sets: 4, reps: "12 (2/leg)", notes: "2 sets per leg (sets 1-2 left, 3-4 right). Moderate weight, lower back on the pad.", category: "UNDERCARD" },
+        { name: "Seated Leg Curl", sets: 3, reps: "10-12", notes: "2s squeeze at full bend.", category: "UNDERCARD" },
+        { name: "Hip Adduction", sets: 3, reps: "15", notes: "Slow.", category: "UNDERCARD" },
+        { name: "Calf Press on the Leg Press", sets: 4, reps: "15", notes: "Balls of your feet on the bottom edge of the plate, full stretch. (No standing calf machine: its shoulder pads load your spine.)", category: "UNDERCARD" },
+        { name: "Wall-Sit Time Trial", sets: 1, reps: "max (sec)", notes: "Back flat against the wall, thighs parallel, hold as long as you can. Log the SECONDS in the reps box.", category: "💥 KNOCKOUT" }
       ],
-      finisher: "Core: Dead Bug 3×10/side + Side Plank 3×30s/side"
+      finisher: "Core: Side Plank 3×30s/side"
     },
     {
-      name: "Day 3 — Upper B",
-      subtitle: "PUMP TOP · new angles · 3 supersets, each on ONE bench or ONE machine (~55 min)",
+      name: "Day 3 — Shoulders & Bi",
+      subtitle: "CAPS & PEAKS · pause presses, the 50-rep challenge, slow curls (~55 min)",
       exercises: [
-        { name: "Incline DB Press", sets: 3, reps: "10-12", notes: "SAME-BENCH SUPERSET: press, then lie face-down on the same bench and row. Rest 90s. 3 rounds.", category: "SAME-BENCH SUPERSET" },
-        { name: "Chest-Supported Incline DB Row", sets: 3, reps: "10-12", notes: "Face-down on the same incline bench, straight after the press.", category: "SAME-BENCH SUPERSET" },
-        { name: "Reverse-grip Lat Pulldown", sets: 3, reps: "10-12", notes: "Palms facing you, elbows to the ribs.", category: "STRAIGHT SET" },
-        { name: "Pec Deck", sets: 3, reps: "12-15", notes: "SAME-MACHINE SUPERSET: flyes, then turn round on the same machine for rear delts. 3 rounds.", category: "SAME-MACHINE SUPERSET" },
-        { name: "Reverse Pec Deck", sets: 3, reps: "12-15", notes: "Straight after the flyes, same machine.", category: "SAME-MACHINE SUPERSET" },
-        { name: "Cable Lateral Raise (single-arm)", sets: 3, reps: "12-15", notes: "LAST SET: drop the weight and go again to failure.", category: "DROP-SET FINISH" },
-        { name: "Incline DB Curl", sets: 3, reps: "10-12", notes: "SAME-BENCH ARMS: curl seated on an incline, then lie flat for the extensions. Rest 60-90s. 3 rounds.", category: "SAME-BENCH ARMS" },
-        { name: "Lying DB Triceps Extension", sets: 3, reps: "10-12", notes: "Lie flat on the same bench, straight after the curls.", category: "SAME-BENCH ARMS" }
+        { name: "Seated Machine Shoulder Press (2s pause)", sets: 4, reps: "6-8", notes: "2s PAUSE at the bottom (the hardest point) on every rep. Back supported.", category: "🥊 MAIN EVENT" },
+        { name: "DB Lateral Raise (50-rep challenge)", sets: 5, reps: "50 total", notes: "REP GOAL: one weight (about your 15-rep max). Hit 50 reps in as few mini-sets as possible, 20s rest between. Log reps per mini-set; fewer sets each week = progress.", category: "UNDERCARD" },
+        { name: "Chest-Supported Incline DB Row", sets: 3, reps: "10-12", notes: "Chest on the bench. Balances all the pressing.", category: "UNDERCARD" },
+        { name: "Reverse Pec Deck", sets: 3, reps: "15", notes: "Rear delts, 1s squeeze.", category: "UNDERCARD" },
+        { name: "Machine Preacher Curl (4s lowering)", sets: 3, reps: "8", notes: "SLOW LOWERING: 4 seconds down on every rep.", category: "UNDERCARD" },
+        { name: "Incline DB Curl (to failure)", sets: 3, reps: "to failure", notes: "MECHANICAL DROP, 3 rounds: incline curls to failure, then sit up and go straight into hammer curls with the same DBs.", category: "UNDERCARD" },
+        { name: "DB Hammer Curl (after incline)", sets: 3, reps: "to failure", notes: "Straight after the incline curls, same DBs, sitting up.", category: "UNDERCARD" },
+        { name: "Chin-up Hold", sets: 3, reps: "max (sec)", notes: "Hang at the top of a chin-up as long as you can. Log the SECONDS.", category: "💥 KNOCKOUT" }
       ],
-      finisher: "Core: Pallof Press 3×12/side + Bird Dog 3×10/side"
+      finisher: "Core: Hanging Knee Raise 3×12 (knees to 90°, no curling up)"
     },
     {
-      name: "Day 4 — Lower B",
-      subtitle: "SLOW BURN · new angles · tempo tricks: 1.5-reps and iso-holds (~50 min)",
+      name: "Day 4 — Legs & Guns",
+      subtitle: "GLUTES, HAMS & ARMS · top set + AMRAP, single-leg curls, one-bar arms (~55 min)",
       exercises: [
-        { name: "Belt Squat / Feet-High Leg Press", sets: 3, reps: "10-12", notes: "1.5-REPS: full rep plus a half-rep from the bottom = 1. Belt squat if the gym has one (loads your hips, not your spine); otherwise leg press with feet high on the plate." },
-        { name: "Lying Leg Curl", sets: 3, reps: "12-15", notes: "Hips pressed into the pad, 2s squeeze." },
-        { name: "Leg Extension (1.5-reps)", sets: 3, reps: "12", notes: "1.5-REPS. Last set: hold the top squeeze for 15s." },
-        { name: "Seated Calf Raise", sets: 4, reps: "15-20", notes: "Slow, full stretch at the bottom." },
-        { name: "Hip Abduction", sets: 3, reps: "15-20", notes: "SAME-MACHINE SUPERSET: abduction, then switch the pads for adduction. 3 rounds.", category: "SAME-MACHINE SUPERSET" },
-        { name: "Hip Adduction", sets: 3, reps: "15-20", notes: "Straight after abduction, same machine.", category: "SAME-MACHINE SUPERSET" }
+        { name: "Hip Thrust Machine", sets: 2, reps: "6-8 + AMRAP", notes: "TOP SET + AMRAP: set 1 heavy for 6-8; set 2 drop 20% and do as many reps as you can. Ribs down; don't arch at the top.", category: "🥊 MAIN EVENT" },
+        { name: "Belt Squat / Feet-High Leg Press", sets: 3, reps: "12", notes: "Belt squat if the gym has one (loads your hips, not your spine); otherwise leg press with feet high.", category: "UNDERCARD" },
+        { name: "Single-Leg Lying Leg Curl", sets: 6, reps: "10 (3/leg)", notes: "3 sets per leg (sets 1-3 left, 4-6 right). 2s squeeze.", category: "UNDERCARD" },
+        { name: "Hip Abduction", sets: 2, reps: "20", notes: "Slow.", category: "UNDERCARD" },
+        { name: "Seated Calf Raise", sets: 3, reps: "15-20", notes: "Full stretch at the bottom.", category: "UNDERCARD" },
+        { name: "EZ-Bar Curl", sets: 4, reps: "10-12", notes: "ONE BAR, ONE BENCH, 4 rounds: curl standing, then lie on the bench for skull crushers with the same bar. Rest 90s.", category: "UNDERCARD" },
+        { name: "EZ-Bar Skull Crusher", sets: 4, reps: "10-12", notes: "Lying flat on the bench, straight after the curls.", category: "UNDERCARD" },
+        { name: "Rope Hammer Curl (tug of war)", sets: 3, reps: "to failure", notes: "TUG OF WAR, one cable, one rope, 3 rounds: hammer curls to failure, then straight into pushdowns to failure.", category: "💥 KNOCKOUT" },
+        { name: "Rope Pushdown (tug of war)", sets: 3, reps: "to failure", notes: "Straight after the rope hammer curls, same rope.", category: "💥 KNOCKOUT" }
       ],
-      finisher: "Core: Dead Bug 3×10/side + Hanging Knee Raise 3×12 (knees to 90°, no curling up)"
+      finisher: "Core: Dead Bug 3×10/side"
     },
     {
       name: "Day 5 — Bonus",
-      subtitle: "GUNS & GRASS · OPTIONAL · outside with 1-2 pairs of DBs + a band · giant sets: no rest within a round, 2 min between (~40 min)",
+      subtitle: "DECK OF CARDS · OPTIONAL · outside with DBs + a band · flip a card, do the reps, 26 cards (~30 min)",
       exercises: [
-        { name: "DB Lateral Raise", sets: 3, reps: "12-15", notes: "DELT GIANT SET, 3 rounds: Lateral → Pull-apart → Face Pull → 20s loaded stretch. No rest within a round, 2 min between.", category: "DELT GIANT SET — 3 rounds" },
-        { name: "Band Pull-apart", sets: 3, reps: "15", notes: "Rear delts. Straight after the laterals.", category: "DELT GIANT SET — 3 rounds" },
-        { name: "Band Face Pull", sets: 3, reps: "15", notes: "Elbows high. Straight after the pull-aparts.", category: "DELT GIANT SET — 3 rounds" },
-        { name: "Loaded Stretch — DB Lateral hold", sets: 3, reps: "20 sec", notes: "Hold light DBs at the bottom of a lateral, arms just off your sides, 20s. Ends the round.", category: "DELT GIANT SET — 3 rounds" },
-        { name: "DB Curl", sets: 3, reps: "12", notes: "ARM GIANT SET, 3 rounds: Curl → Pushdown → Hammer → Push-up → stretches. No rest within a round, 2 min between.", category: "ARM GIANT SET — 3 rounds" },
-        { name: "Band Pushdown", sets: 3, reps: "15", notes: "Band anchored high on the monkey bars. Straight after the curls.", category: "ARM GIANT SET — 3 rounds" },
-        { name: "DB Hammer Curl", sets: 3, reps: "12", notes: "Straight after the pushdowns.", category: "ARM GIANT SET — 3 rounds" },
-        { name: "Close-grip Push-up", sets: 3, reps: "AMRAP", notes: "To near-failure. Straight after the hammers.", category: "ARM GIANT SET — 3 rounds" },
-        { name: "Loaded Stretch — curl + triceps", sets: 3, reps: "30 sec ea", notes: "30s curl stretch + 30s overhead triceps stretch. Ends the round.", category: "ARM GIANT SET — 3 rounds" },
-        { name: "Dead Hang (monkey bars)", sets: 3, reps: "30-45 sec", notes: "Hang relaxed. Lets your lower back decompress, a good way to end the week. Log the seconds in the reps box.", category: "FINISH" }
+        { name: "♥ Push-ups (cards)", sets: 1, reps: "total", notes: "HEARTS. Shuffle, flip one card at a time. Number = reps; J/Q/K = 10, Ace = 15. Work through half the deck (26 cards). Log this suit's TOTAL reps.", category: "DECK OF CARDS — half a deck" },
+        { name: "♦ DB Curl (cards)", sets: 1, reps: "total", notes: "DIAMONDS. Log total reps (and the DB weight).", category: "DECK OF CARDS — half a deck" },
+        { name: "♠ DB Lateral Raise (cards)", sets: 1, reps: "total", notes: "SPADES. Log total reps (and the DB weight).", category: "DECK OF CARDS — half a deck" },
+        { name: "♣ Band Pushdown (cards)", sets: 1, reps: "total", notes: "CLUBS. Band anchored high on the monkey bars. Log total reps.", category: "DECK OF CARDS — half a deck" },
+        { name: "Dead Hang (jokers)", sets: 2, reps: "30 sec", notes: "JOKER = a 30s dead hang on the monkey bars. Decompresses your lower back.", category: "DECK OF CARDS — half a deck" }
       ],
-      finisher: "Optional bonus day: skip it on a heavy week."
+      finisher: "Optional bonus day: skip it on a heavy week. Every week is a different workout."
     }
   ]
 };
